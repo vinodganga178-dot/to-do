@@ -8,7 +8,7 @@ function App() {
   // Fetch tasks from backend
   const fetchTasks = async () => {
     const res = await fetch(
-      "https://YOUR-BACKEND.onrender.com/tasks"
+      "https://todo-backend-7f1d.onrender.comtasks"
     );
 
     const data = await res.json();
@@ -25,7 +25,7 @@ function App() {
     if (text.trim() === "") return;
 
     await fetch(
-      `https://YOUR-BACKEND.onrender.com/tasks/${text}`,
+      `https://todo-backend-7f1d.onrender.com${text}`,
       {
         method: "POST",
       }
@@ -39,7 +39,7 @@ function App() {
   // Delete permanently
   const deleteTask = async (id: number) => {
     await fetch(
-      `https://YOUR-BACKEND.onrender.com/tasks/${id}`,
+      `https://todo-backend-7f1d.onrender.com{id}`,
       {
         method: "DELETE",
       }
