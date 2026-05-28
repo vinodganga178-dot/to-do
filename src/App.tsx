@@ -42,16 +42,16 @@ function App() {
 
   // Delete task
   const deleteTask = async (id: number) => {
-    try {
-      await fetch(`${API}/tasks/${id}`, {
-        method: "DELETE",
-      });
+  try {
+    await fetch(`${API}/tasks/${id}`, {
+      method: "DELETE",
+    });
 
-      fetchTasks();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    fetchTasks();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 text-white p-10">
