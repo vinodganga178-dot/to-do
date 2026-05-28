@@ -19,7 +19,7 @@ function App() {
   const addTask = async () => {
     if (text.trim() === "") return;
 
-    await fetch(`http://127.0.0.1:8000/tasks/${text}`, {
+    await fetch(`https://todo-backend-7f1d.onrender.com/`, {
       method: "POST",
     });
 
