@@ -84,36 +84,45 @@ function App() {
         {/* Tasks */}
         <div className="space-y-4">
 
-          {tasks.map((task) => (
+        <div
+  key={task.id}
+  className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center"
+>
 
-            <div
-              key={task.id}
-              className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center"
-            >
+  <div className="flex items-center gap-3">
 
-              {/* Done + Text */}
-              <div className="flex items-center gap-3">
+    <input
+      type="checkbox"
+      onChange={(e) => {
+        const updated = tasks.map((t) =>
+          t.id === task.id
+            ? { ...t, done: e.target.checked }
+            : t
+        );
 
-                <input
-                  type="checkbox"
-                  className="w-5 h-5"
-                />
+        setTasks(updated);
+      }}
+      className="w-5 h-5"
+    />
 
-                <p className="text-lg">
-                  {task.text}
-                </p>
+    <p
+      className={`text-lg ${
+        task.done ? "line-through text-gray-400" : ""
+      }`}
+    >
+      {task.text}
+    </p>
 
-              </div>
+  </div>
 
-              {/* Delete */}
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="bg-red-500 px-4 py-2 rounded-xl hover:scale-105 transition"
-              >
-                Delete
-              </button>
+  <button
+    onClick={() => deleteTask(task.id)}
+    className="bg-red-500 px-4 py-2 rounded-xl hover:scale-105 transition"
+  >
+    Delete
+  </button>
 
-            </div>
+</div>  
 
           ))}
 
