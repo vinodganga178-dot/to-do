@@ -5,47 +5,52 @@ function App() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [text, setText] = useState("");
 
-  // Fetch tasks from backend
+  // Backend URL
+  const API = "https://todo-backend-7f1d.onrender.com";
+
+  // Fetch tasks
   const fetchTasks = async () => {
-    const res = await fetch(
-      "https://todo-backend-7f1d.onrender.comtasks"
-    );
-
-    const data = await res.json();
-
-    setTasks(data);
+    try {
+      const res = await fetch(`${API}/tasks`);
+      const data = await res.json();
+      setTasks(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  // Add task permanently
+  // Add task
   const addTask = async () => {
-    if (text.trim() === "") return;
+  if (text.trim() === "") return;
 
-    await fetch(
-      `https://todo-backend-7f1d.onrender.com${text}`,
-      {
-        method: "POST",
-      }
-    );
+  try {
+    await fetch(`${API}/tasks/${encodeURIComponent(text)}`, {
+      method: "POST",
+    });
 
     setText("");
-
     fetchTasks();
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-  // Delete permanently
+
+  // Delete task
   const deleteTask = async (id: number) => {
-    await fetch(
-      `https://todo-backend-7f1d.onrender.com{id}`,
-      {
+    try {
+      await fetch(`${API}/tasks/${id}`, {
         method: "DELETE",
-      }
-    );
+      });
 
-    fetchTasks();
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -56,6 +61,7 @@ function App() {
           Smart Todo 🚀
         </h1>
 
+        {/* Input Section */}
         <div className="flex gap-4 mb-8">
 
           <input
@@ -68,13 +74,14 @@ function App() {
 
           <button
             onClick={addTask}
-            className="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-bold"
+            className="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-bold hover:scale-105 transition"
           >
             Add
           </button>
 
         </div>
 
+        {/* Tasks */}
         <div className="space-y-4">
 
           {tasks.map((task) => (
@@ -84,11 +91,24 @@ function App() {
               className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center"
             >
 
-              <p className="text-lg">{task.text}</p>
+              {/* Done + Text */}
+              <div className="flex items-center gap-3">
 
+                <input
+                  type="checkbox"
+                  className="w-5 h-5"
+                />
+
+                <p className="text-lg">
+                  {task.text}
+                </p>
+
+              </div>
+
+              {/* Delete */}
               <button
                 onClick={() => deleteTask(task.id)}
-                className="bg-red-500 px-4 py-2 rounded-xl"
+                className="bg-red-500 px-4 py-2 rounded-xl hover:scale-105 transition"
               >
                 Delete
               </button>
