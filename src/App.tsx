@@ -2,46 +2,50 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
   const [text, setText] = useState("");
 
   // Fetch tasks from backend
+  const fetchTasks = async () => {
+    const res = await fetch(
+      "https://YOUR-BACKEND.onrender.com/tasks"
+    );
+
+    const data = await res.json();
+
+    setTasks(data);
+  };
+
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/tasks")
-      .then((res) => res.json())
-      .then((data) => {
-        const taskTexts = data.map((task: any) => task.text);
-        setTasks(taskTexts);
-      });
+    fetchTasks();
   }, []);
 
-  // Add task
+  // Add task permanently
   const addTask = async () => {
     if (text.trim() === "") return;
 
-    await fetch(`https://todo-backend-7f1d.onrender.com/`, {
-      method: "POST",
-    });
+    await fetch(
+      `https://YOUR-BACKEND.onrender.com/tasks/${text}`,
+      {
+        method: "POST",
+      }
+    );
 
-    setTasks([...tasks, text]);
     setText("");
+
+    fetchTasks();
   };
 
-  // Delete task
-  const deleteTask = (index: number) => {
-    const updated = tasks.filter((_, i) => i !== index);
-    setTasks(updated);
-  };
+  // Delete permanently
+  const deleteTask = async (id: number) => {
+    await fetch(
+      `https://YOUR-BACKEND.onrender.com/tasks/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
 
-  // Mark as done
-  const doneTask = (index: number) => {
-    const updated = [...tasks];
-
-    if (!updated[index].startsWith("✅")) {
-      updated[index] = "✅ " + updated[index];
-    }
-
-    setTasks(updated);
+    fetchTasks();
   };
 
   return (
@@ -52,7 +56,6 @@ function App() {
           Smart Todo 🚀
         </h1>
 
-        {/* Input */}
         <div className="flex gap-4 mb-8">
 
           <input
@@ -65,42 +68,30 @@ function App() {
 
           <button
             onClick={addTask}
-            className="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-bold hover:scale-105 transition"
+            className="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-bold"
           >
             Add
           </button>
 
         </div>
 
-        {/* Tasks */}
         <div className="space-y-4">
 
-          {tasks.map((task, index) => (
+          {tasks.map((task) => (
 
             <div
-              key={index}
+              key={task.id}
               className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center"
             >
 
-              <p className="text-lg">{task}</p>
+              <p className="text-lg">{task.text}</p>
 
-              <div className="flex gap-2">
-
-                <button
-                  onClick={() => doneTask(index)}
-                  className="bg-green-500 px-4 py-2 rounded-xl hover:scale-105 transition"
-                >
-                  Done
-                </button>
-
-                <button
-                  onClick={() => deleteTask(index)}
-                  className="bg-red-500 px-4 py-2 rounded-xl hover:scale-105 transition"
-                >
-                  Delete
-                </button>
-
-              </div>
+              <button
+                onClick={() => deleteTask(task.id)}
+                className="bg-red-500 px-4 py-2 rounded-xl"
+              >
+                Delete
+              </button>
 
             </div>
 
