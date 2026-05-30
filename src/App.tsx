@@ -7,14 +7,14 @@ function App() {
     return null;
   }
 
-  const API = "https://todo-backend-7f1d.onrender.com/api/tasks";
+  const API_URL= "https://todo-backend-7f1d.onrender.com/api/tasks";
 
   const [tasks, setTasks] = useState<any[]>([]);
   const [text, setText] = useState("");
 
   const fetchTasks = async () => {
     try {
-      const res = await fetch(`${API}/tasks`);
+      const res = await fetch(`${API_URL}/tasks`);
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -30,7 +30,7 @@ function App() {
     if (text.trim() === "") return;
 
     try {
-      await fetch(`${API}/tasks/${encodeURIComponent(text)}`, {
+      await fetch(`${API_URL}/tasks/${encodeURIComponent(text)}`, {
         method: "POST",
       });
 
@@ -43,7 +43,7 @@ function App() {
 
   const deleteTask = async (id: number) => {
     try {
-      await fetch(`${API}/tasks/${id}`, {
+      await fetch(`${API_URL}/tasks/${id}`, {
         method: "DELETE",
       });
 
@@ -55,7 +55,7 @@ function App() {
 
   const toggleDone = async (id: number) => {
     try {
-      await fetch(`${API}/tasks/${id}/done`, {
+      await fetch(`${API_URL}/tasks/${id}/done`, {
         method: "PUT",
       });
 
