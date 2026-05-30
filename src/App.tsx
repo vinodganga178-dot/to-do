@@ -7,7 +7,7 @@ function App() {
     return null;
   }
 
-  const API = "https://todo-backend-7f1d.onrender.com";
+  const API = "https://todo-backend-7f1d.onrender.com/api/tasks";
 
   const [tasks, setTasks] = useState<any[]>([]);
   const [text, setText] = useState("");
