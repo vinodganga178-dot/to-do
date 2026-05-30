@@ -2,72 +2,89 @@ import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
+  if (!localStorage.getItem("user")) {
+    window.location.href = "/login";
+    return null;
+  }
 
   const API = "https://todo-backend-7f1d.onrender.com";
 
   const [tasks, setTasks] = useState<any[]>([]);
   const [text, setText] = useState("");
 
-  // Fetch tasks
   const fetchTasks = async () => {
-
-    const res = await fetch(`${API}/tasks`);
-
-    const data = await res.json();
-
-    setTasks(data);
+    try {
+      const res = await fetch(`${API}/tasks`);
+      const data = await res.json();
+      setTasks(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
-  // Add task
   const addTask = async () => {
-
     if (text.trim() === "") return;
 
-    await fetch(`${API}/tasks/${encodeURIComponent(text)}`, {
-      method: "POST",
-    });
+    try {
+      await fetch(`${API}/tasks/${encodeURIComponent(text)}`, {
+        method: "POST",
+      });
 
-    setText("");
-
-    fetchTasks();
+      setText("");
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // Delete task
   const deleteTask = async (id: number) => {
+    try {
+      await fetch(`${API}/tasks/${id}`, {
+        method: "DELETE",
+      });
 
-    await fetch(`${API}/tasks/${id}`, {
-      method: "DELETE",
-    });
-
-    fetchTasks();
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // Toggle done
   const toggleDone = async (id: number) => {
+    try {
+      await fetch(`${API}/tasks/${id}/done`, {
+        method: "PUT",
+      });
 
-    await fetch(`${API}/tasks/${id}`, {
-      method: "PUT",
-    });
-
-    fetchTasks();
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black to-gray-900 text-white p-10">
-
-      <div className="max-w-2xl mx-auto">
-
-        <h1 className="text-5xl font-bold text-cyan-400 text-center mb-10">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white p-8">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-5xl font-bold text-cyan-400 text-center mb-6">
           Smart Todo 🚀
         </h1>
 
-        {/* Input */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex justify-end mb-6">
+          <button
+            onClick={() => {
+              localStorage.removeItem("user");
+              window.location.href = "/login";
+            }}
+            className="bg-red-500 px-4 py-2 rounded-xl"
+          >
+            Logout
+          </button>
+        </div>
 
+        <div className="flex gap-4 mb-8">
           <input
             type="text"
             placeholder="Enter task..."
@@ -82,26 +99,19 @@ function App() {
           >
             Add
           </button>
-
         </div>
 
-        {/* Tasks */}
         <div className="space-y-4">
-
           {tasks.map((task) => (
-
             <div
               key={task.id}
               className="bg-gray-800 p-5 rounded-2xl flex justify-between items-center"
             >
-
-              <div className="flex items-center gap-3">
-
+              <div className="flex items-center gap-4">
                 <input
                   type="checkbox"
                   checked={task.done}
                   onChange={() => toggleDone(task.id)}
-                  className="w-5 h-5"
                 />
 
                 <p
@@ -111,7 +121,6 @@ function App() {
                 >
                   {task.text}
                 </p>
-
               </div>
 
               <button
@@ -120,15 +129,10 @@ function App() {
               >
                 Delete
               </button>
-
             </div>
-
           ))}
-
         </div>
-
       </div>
-
     </div>
   );
 }
